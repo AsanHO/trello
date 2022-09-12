@@ -16,6 +16,7 @@
     "react-hook-form": "^7.34.2",
     "react-scripts": "5.0.1",
     "recoil": "^0.7.5",
+    "recoil-persist": "^4.2.0",
     "reset-css": "^5.0.1",
     "styled-components": "^5.3.5",
     "styled-reset": "^4.4.2",

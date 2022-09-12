@@ -4,6 +4,7 @@ import {
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
+import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
@@ -25,10 +26,18 @@ const Boards = styled.div`
   gap: 10px;
   grid-template-columns: repeat(3, 1fr);
 `;
-
+const Form = styled.form`
+  position: absolute;
+  top: 10%;
+  width: 30%;
+  input {
+    width: 100%;
+  }
+`;
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = (info: DropResult) => {
+    console.log(info);
     const { destination, draggableId, source } = info;
     if (!destination) return;
     //same board movement 보드주소가 같다면
@@ -60,9 +69,31 @@ function App() {
       });
     }
   };
+  interface IForm {
+    newBoard: string;
+  }
+  const onValid = ({ newBoard }: IForm) => {
+    console.log(newBoard);
+    setToDos((allBoards) => {
+      return {
+        ...allBoards,
+        [newBoard]: [],
+      };
+    });
+    setValue("newBoard", "");
+  };
+  console.log(toDos);
+  const { register, setValue, handleSubmit } = useForm<IForm>();
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Wrapper>
+        <Form onSubmit={handleSubmit(onValid)}>
+          <input
+            {...register("newBoard", { required: true })}
+            type="text"
+            placeholder={`새로운 보드를 추가하세요`}
+          />
+        </Form>
         <Boards>
           {Object.keys(toDos).map((boardId) => (
             <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
